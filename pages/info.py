@@ -2,14 +2,15 @@
 #This File will contain the information to be displayed in your portfolio
 
 #CHANGE BELOW
-profile_picture = "Images/profile.jpeg"
+profile_picture = "../Images/profile.jpeg"
 about_me = "I'm SpongeBobe Square Pants. I work at the Krusty Krab and I make fantastic Krabby Patties. "
 
 
 #CHANGE BELOW (OPTIONAL)
 linkedin_image_url = "https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg"
 github_image_url = "https://cdn-icons-png.flaticon.com/256/25/25231.png"
-email_image_url = "https://logowik.com/content/uploads/images/513_email.jpg"
+# email_image_url = "https://logowik.com/content/uploads/../images/513_email.jpg"
+email_image_url = "https://png.pngtree.com/png-vector/20201109/ourmid/pngtree-email-icon-design-png-image_2413695.jpg"
 
 #CHANGE BELOW
 my_linkedin_url = "https://www.linkedin.com/in/spongebob-squarepants-44b857281/"
@@ -32,10 +33,10 @@ course_data = {
     }
 experience_data = {
     "Cook at Krusty Krab": (["- Worked on designing the Krabby Patty Recipe",
-                                                                          "- Increased Company Revenue by 200 dollars", "- Made Mr. Krabs Proud"],"Images/cook.jpg"),
+                                                                          "- Increased Company Revenue by 200 dollars", "- Made Mr. Krabs Proud"],"../Images/cook.jpg"),
     "Cleaner at Krusty Krab":(["- Made the floor almost reflective",
-                                                           "- Increased customer visits by three folds by making restaurant clean"],"Images/cleaner.jpg"),
-    "Jelly Fish Catcher":(["- Caught 100+ Jellyfish with the help of my colleague Patrick"],"Images/jelly.jpg")
+                                                           "- Increased customer visits by three folds by making restaurant clean"],"../Images/cleaner.jpg"),
+    "Jelly Fish Catcher":(["- Caught 100+ Jellyfish with the help of my colleague Patrick"],"../Images/jelly.jpg")
 
 }
 
@@ -67,7 +68,7 @@ spoken_data = {
     "Spanish": "Fluent",
 }
 leadership_data = {
-    "Driver at Mrs Puff's School": (["- Elected Worst Student of the Century"],"Images/puff.jpg"),
+    "Driver at Mrs Puff's School": (["- Elected Worst Student of the Century"],"../Images/puff.jpg"),
 
 }
 activity_data={
