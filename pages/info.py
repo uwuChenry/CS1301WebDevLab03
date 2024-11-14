@@ -10,7 +10,7 @@ about_me = "I'm SpongeBobe Square Pants. I work at the Krusty Krab and I make fa
 linkedin_image_url = "https://content.linkedin.com/content/dam/me/business/en-us/amp/brand-site/v2/bg/LI-Bug.svg.original.svg"
 github_image_url = "https://cdn-icons-png.flaticon.com/256/25/25231.png"
 # email_image_url = "https://logowik.com/content/uploads/../images/513_email.jpg"
-email_image_url = "https://png.pngtree.com/png-vector/20201109/ourmid/pngtree-email-icon-design-png-image_2413695.jpg"
+email_image_url = "../Images/email.png"
 
 #CHANGE BELOW
 my_linkedin_url = "https://www.linkedin.com/in/spongebob-squarepants-44b857281/"
