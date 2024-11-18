@@ -102,7 +102,7 @@ def loading_screen():
         for i in range(len(message) + 1):
             current_message += message[i-1:i]  # Append one character at a time
             placeholder.markdown(f"<div class='loading-message'>{current_message}</div>", unsafe_allow_html=True)
-            sleep(0.07)
+            sleep(0.06)
         
         # Add a line break after each message to stack them
         current_message += "<br>"

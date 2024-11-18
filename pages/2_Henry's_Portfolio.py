@@ -58,7 +58,8 @@ def project_section(projects_data):
     st.header("Projects")
     for name, desc in projects_data.items():
         expander = st.expander(f"{name}")
-        expander.write(desc)
+        for bullet in desc:
+            expander.write(bullet)
     st.write("---")
 
 project_section(henryInfo.projects_data)
@@ -81,7 +82,7 @@ skills_section(henryInfo.programming_data, henryInfo.spoken_data)
 
 def activities_section(leadership, activity):
     st.header("Activities")
-    tab1, tab2 = st.tabs(["Leadership", "Community Service"])
+    tab1, tab2 = st.tabs(["Leadership", "Clubs"])
     with tab1:
         st.subheader("Leadership")
         for title, (details, img) in leadership.items():
@@ -90,7 +91,7 @@ def activities_section(leadership, activity):
             for bullet in details:
                 expander.write(bullet)
     with tab2:
-        st.subheader("Community Service")
+        st.subheader("Clubs")
         for title, details in activity.items():
             expander = st.expander(f"{title}")
             for bullet in details:
