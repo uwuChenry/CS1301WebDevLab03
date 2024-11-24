@@ -84,9 +84,10 @@ if st.button("Get Advice"):
                 st.write(summary)
                 st.subheader(f"NutriAI Advice for {mname}")
             st.write(advice)
-            if summary and len(result["meals"])>1:
-                st.subheader(f"Other similar recipies for \"{meal_name}\"")
-                for things in result["meals"][1:]:
-                    st.write(things["strMeal"])
+            if summary and search_type == "Meal Name":
+                if len(result) > 1:
+                    st.subheader(f"Other similar recipies for \"{meal_name}\"")
+                    for things in result["meals"][1:]:
+                        st.write(things["strMeal"])
     else:
         st.warning("Please enter a query to get advice.")
