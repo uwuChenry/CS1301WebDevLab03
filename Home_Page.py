@@ -1,5 +1,4 @@
 import streamlit as st
-from time import sleep
 import base64
 
 # Set page configuration
@@ -20,7 +19,6 @@ st.markdown("""
     <style>
     body {
         background-color: black;
-        font-family: 'Courier New', monospace;
         color: #9ca3af;
     }
     .title {
@@ -71,49 +69,10 @@ st.markdown("""
         font-size: 1.25em;
         letter-spacing: 0.1em;
     }
-    .loading-message {
-        font-family: 'Courier New', monospace;
-        color: lightblue;
-        font-size: 1.5em;
-        text-align: center;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    }
     </style>
 """, unsafe_allow_html=True)
 
-# Loading screen function
-def loading_screen():
-    loading_messages = [
-        "% Optimizing efficiency route...",
-        "% Fetching data...",
-        "% Making pathways available...",
-        "% Route optimization complete..."
-    ]
-    
-    # Create a placeholder for loading messages
-    placeholder = st.empty()
-    
-    # String to hold all the messages and progressively add them
-    current_message = ""
-    
-    # Display loading messages with delay
-    for message in loading_messages:
-        # Add each new message to the current message string
-        for i in range(len(message) + 1):
-            current_message += message[i-1:i]  # Append one character at a time
-            placeholder.markdown(f"<div class='loading-message'>{current_message}</div>", unsafe_allow_html=True)
-            sleep(0.06)
-        
-        # Add a line break after each message to stack them
-        current_message += "<br>"
-    
-    placeholder.empty()
-
-# Show the loading screen before anything else
-loading_screen()
-
-
-# Display the correct page based on the selection
+# Display the page content
 
 st.title("Web Development Lab 03")
 st.header("CS 1301")
