@@ -58,7 +58,8 @@ def project_section(projects_data):
     st.header("Projects")
     for name, desc in projects_data.items():
         expander = st.expander(f"{name}")
-        expander.write(desc)
+        for bullet in desc:
+            expander.write(bullet)
     st.write("---")
 
 project_section(rayeedInfo.projects_data)
