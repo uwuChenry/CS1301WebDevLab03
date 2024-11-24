@@ -108,70 +108,75 @@ def filter_by_category(category):
 def filter_by_ingredient(ingredient):
     response = requests.get(f"{API_URL}filter.php?i={ingredient}")
     return response.json()
-
-def main():
-    st.title("Recipe Finder")
-
-    search_type = st.selectbox("Search By", ["Meal Name", "Random", "Category", "Main Ingredient"]) #NEW
-
-    if search_type == "Meal Name":
-        meal_name = st.text_input("Enter Meal Name") #NEW
-        if meal_name:
-            result = search_recipe_by_name(meal_name)
-            if result["meals"]:
-                meal = random.choice(result["meals"])
-                st.subheader(meal["strMeal"])
-                st.image(meal["strMealThumb"])
-                st.write(f"**Category**: {meal['strCategory']}")
-                st.write(f"**Area**: {meal['strArea']}")
-                st.write(f"**Instructions**: {meal['strInstructions']}")
-                st.write("**Ingredients**:")
-                for i in range(1, 21):
-                    ingredient = meal.get(f"strIngredient{i}")
-                    measure = meal.get(f"strMeasure{i}")
-                    if ingredient:
-                        st.write(f"{ingredient} - {measure}")
-                area = meal["strArea"]
-                lat, lon = get_coordinates(area)
-                if lat is not None and lon is not None:
-                    st.write(f"**Location of the {area} cuisine origin:** {lat}, {lon}")
-                    map_ = folium.Map(location=[lat, lon], zoom_start=5)
-                    folium.Marker([lat, lon], popup=f"{area}").add_to(map_)
-                    st_folium(map_, width=700, height=500) #NEW
-                else:
-                    st.write(f"Coordinates for the {area} cuisine are not available.")
-            else:
-                st.write("No recipes found. Please try another name.")
-
-    elif search_type == "Random":
-        if "random_meal" not in st.session_state or st.button("Get New Random Recipe"): #NEW
-            result = get_random_recipe()
-            st.session_state.random_meal = result["meals"][0]
-        
-        meal = st.session_state.random_meal
-        st.subheader(meal["strMeal"])
-        st.image(meal["strMealThumb"])
-        st.write(f"**Category**: {meal['strCategory']}")
-        st.write(f"**Area**: {meal['strArea']}")
-        st.write(f"**Instructions**: {meal['strInstructions']}")
-        st.write("**Ingredients**:")
+def display_recipe(meal):
+    st.subheader(meal["strMeal"])
+    st.image(meal["strMealThumb"])
+    st.write(f"**Category**: {meal['strCategory']}")
+    st.write(f"**Area**: {meal['strArea']}")
+    
+    with st.expander("Instructions", expanded=True):
+        st.write(meal['strInstructions'])
+    
+    with st.expander("Ingredients", expanded=True):
         for i in range(1, 21):
             ingredient = meal.get(f"strIngredient{i}")
             measure = meal.get(f"strMeasure{i}")
-            if ingredient:
+            if ingredient and ingredient.strip():
                 st.write(f"{ingredient} - {measure}")
-        area = meal["strArea"]
-        lat, lon = get_coordinates(area)
-        if lat is not None and lon is not None:
-            st.write(f"**Location of the {area} cuisine origin:** {lat}, {lon}")
-            map_ = folium.Map(location=[lat, lon], zoom_start=5)
-            folium.Marker([lat, lon], popup=f"{area}").add_to(map_)
-            st_folium(map_, width=700, height=500)
-        else:
-            st.write(f"Coordinates for the {area} cuisine are not available.")
+    
+    area = meal["strArea"]
+    lat, lon = get_coordinates(area)
+    if lat is not None and lon is not None:
+        st.write(f"**Location of the {area} cuisine origin:** {lat}, {lon}")
+        map_ = folium.Map(location=[lat, lon], zoom_start=5)
+        folium.Marker([lat, lon], popup=f"{area}").add_to(map_)
+        st_folium(map_, width=700, height=500, key=f"map_{meal['idMeal']}") #NEW (st_folium)
+    else:
+        st.write(f"Coordinates for the {area} cuisine are not available.")
+
+def main():
+    st.title("Recipe Finder")
+    
+    if 'current_meal' not in st.session_state:
+        st.session_state.current_meal = None
+    if 'search_performed' not in st.session_state:
+        st.session_state.search_performed = False
+    if 'last_search' not in st.session_state:
+        st.session_state.last_search = None
+
+    search_type = st.selectbox("Search By", 
+                             ["Meal Name", "Random", "Category", "Main Ingredient"],
+                             key="search_type") #NEW (selectbox)
+
+    if search_type == "Meal Name":
+        meal_name = st.text_input("Enter Meal Name", key="meal_name") #NEW (text_input)
+    
+        if meal_name and (not st.session_state.search_performed or meal_name != st.session_state.last_search):
+            result = search_recipe_by_name(meal_name)
+            if result["meals"]:
+                
+                st.session_state.current_meal = result["meals"][0]
+                st.session_state.search_performed = True
+                st.session_state.last_search = meal_name
+            else:
+                st.write("No recipes found. Please try another name.")
+                st.session_state.current_meal = None
+        
+        if st.session_state.current_meal:
+            display_recipe(st.session_state.current_meal)
+
+    elif search_type == "Random":
+        if st.button("Get New Random Recipe") or (not st.session_state.current_meal): #NEW (button)
+            result = get_random_recipe()
+            st.session_state.current_meal = result["meals"][0]
+        
+        if st.session_state.current_meal:
+            display_recipe(st.session_state.current_meal)
 
     elif search_type == "Category":
-        category = st.selectbox("Select Category", ["Seafood", "Dessert", "Chicken", "Beef", "Vegetarian"])
+        category = st.selectbox("Select Category", 
+                              ["Seafood", "Dessert", "Chicken", "Beef", "Vegetarian"],
+                              key="category")
         if category:
             result = filter_by_category(category)
             if result["meals"]:
@@ -182,7 +187,7 @@ def main():
                 st.write(f"No meals found in the {category} category.")
 
     elif search_type == "Main Ingredient":
-        ingredient = st.text_input("Enter Main Ingredient")
+        ingredient = st.text_input("Enter Main Ingredient", key="ingredient") 
         if ingredient:
             result = filter_by_ingredient(ingredient)
             if result["meals"]:
