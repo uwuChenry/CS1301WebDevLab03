@@ -88,11 +88,9 @@ AREA_COORDINATES = {
     "Kenyan": (-1.286389, 36.817223),
     "Ugandan": (1.3733, 32.2903)
 }
-
 def search_recipe_by_name(meal_name):
     response = requests.get(f"{API_URL}search.php?s={meal_name}")
     return response.json()
-
 
 def get_random_recipe():
     response = requests.get(f"{API_URL}random.php")
@@ -108,6 +106,7 @@ def filter_by_category(category):
 def filter_by_ingredient(ingredient):
     response = requests.get(f"{API_URL}filter.php?i={ingredient}")
     return response.json()
+
 def display_recipe(meal):
     st.subheader(meal["strMeal"])
     st.image(meal["strMealThumb"])
@@ -134,15 +133,32 @@ def display_recipe(meal):
     else:
         st.write(f"Coordinates for the {area} cuisine are not available.")
 
+def display_remaining_recipes(meals, current_meal_id):
+    remaining_meals = [meal for meal in meals if meal['idMeal'] != current_meal_id]
+    if remaining_meals:
+        st.markdown("---")
+        st.subheader("Other Matching Recipes")
+        cols = st.columns(3)
+        for idx, meal in enumerate(remaining_meals):
+            with cols[idx % 3]:
+                st.image(meal['strMealThumb'], width=200)
+                st.write(f"**{meal['strMeal']}**")
+                if st.button("View Recipe", key=f"btn_{meal['idMeal']}"):
+                    st.session_state.current_meal = meal
+                    st.rerun()
+
 def main():
     st.title("Recipe Finder")
     
+    # Initialize session state
     if 'current_meal' not in st.session_state:
         st.session_state.current_meal = None
     if 'search_performed' not in st.session_state:
         st.session_state.search_performed = False
     if 'last_search' not in st.session_state:
         st.session_state.last_search = None
+    if 'all_meals' not in st.session_state:
+        st.session_state.all_meals = None
 
     search_type = st.selectbox("Search By", 
                              ["Meal Name", "Random", "Category", "Main Ingredient"],
@@ -150,25 +166,30 @@ def main():
 
     if search_type == "Meal Name":
         meal_name = st.text_input("Enter Meal Name", key="meal_name") #NEW (text_input)
-    
+        
+        # Only perform search if meal name changed or no search performed yet
         if meal_name and (not st.session_state.search_performed or meal_name != st.session_state.last_search):
             result = search_recipe_by_name(meal_name)
             if result["meals"]:
-                
+                st.session_state.all_meals = result["meals"]
                 st.session_state.current_meal = result["meals"][0]
                 st.session_state.search_performed = True
                 st.session_state.last_search = meal_name
             else:
                 st.write("No recipes found. Please try another name.")
                 st.session_state.current_meal = None
+                st.session_state.all_meals = None
         
         if st.session_state.current_meal:
             display_recipe(st.session_state.current_meal)
+            if st.session_state.all_meals:
+                display_remaining_recipes(st.session_state.all_meals, st.session_state.current_meal['idMeal'])
 
     elif search_type == "Random":
         if st.button("Get New Random Recipe") or (not st.session_state.current_meal): #NEW (button)
             result = get_random_recipe()
             st.session_state.current_meal = result["meals"][0]
+            st.session_state.all_meals = result["meals"]
         
         if st.session_state.current_meal:
             display_recipe(st.session_state.current_meal)
@@ -181,19 +202,23 @@ def main():
             result = filter_by_category(category)
             if result["meals"]:
                 st.write(f"**Meals in the {category} Category:**")
-                for meal in result["meals"]:
-                    st.write(f"- {meal['strMeal']}")
+                cols = st.columns(3)
+                for idx, meal in enumerate(result["meals"]):
+                    with cols[idx % 3]:
+                        st.write(f"- {meal['strMeal']}")
             else:
                 st.write(f"No meals found in the {category} category.")
 
     elif search_type == "Main Ingredient":
-        ingredient = st.text_input("Enter Main Ingredient", key="ingredient") 
+        ingredient = st.text_input("Enter Main Ingredient", key="ingredient")
         if ingredient:
             result = filter_by_ingredient(ingredient)
             if result["meals"]:
                 st.write(f"**Meals with {ingredient}:**")
-                for meal in result["meals"]:
-                    st.write(f"- {meal['strMeal']}")
+                cols = st.columns(3)
+                for idx, meal in enumerate(result["meals"]):
+                    with cols[idx % 3]:
+                        st.write(f"- {meal['strMeal']}")
             else:
                 st.write(f"No meals found with {ingredient}.")
 
