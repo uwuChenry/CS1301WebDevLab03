@@ -39,7 +39,8 @@ experience_data = {
 
 projects_data = {
     "AquaRoute | Streamlit, Databricks, Python, Plotly, Geopy, Numpy, Folium": ["- An AI-powered Streamlit app to optimize ocean routes based on plastic concentration data, using Folium for map visualization, KDTree for spatial queries and a modified A* using k-nearest neighbors to find the optimal route.", "- Won the Best Use of Databricks award at the AI ATL hackathon."],
-    "MemoMe | MongoDB Compass, Flask, Python, React, HTML, CSS, Gradio": ["- Developed an AI web app to assist individuals with memory impairments by enabling users to interact with a speech-to-text chatbot which stores patient details using MongoDB Compass.", "- Implemented a user-friendly interface with React which enhances accessibility for patients, and also allows their caregivers to monitor their activity through the caregiver portal."]
+    "MemoMe | MongoDB Compass, Flask, Python, React, HTML, CSS, Gradio": ["- Developed an AI web app to assist individuals with memory impairments by enabling users to interact with a speech-to-text chatbot which stores patient details using MongoDB Compass.", "- Implemented a user-friendly interface with React which enhances accessibility for patients, and also allows their caregivers to monitor their activity through the caregiver portal."],
+    "NutriAI | Streamlit, Python, Google Gemini": ["- Developed a Streamlit web app which used theMealDB API to fetch food recipe data using various endpoints and has the ability to filter certain meals by their names or particular ingredients, and ultimately allows for users to receive meal recommendations and instructions.", "- Google's Generative AI (gemini-1.5-flash) was used to as a tool to provide nutrition analysis, personified as a nutritionist which may give advice depending on the data in the API, and external data from gemini’s data source. It responds to user queries as a chatbot, and enhances user experience."]
 }
 
 programming_data = {

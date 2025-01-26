@@ -149,8 +149,7 @@ def display_remaining_recipes(meals, current_meal_id):
 
 def main():
     st.title("Recipe Finder")
-    
-    # Initialize session state
+
     if 'current_meal' not in st.session_state:
         st.session_state.current_meal = None
     if 'search_performed' not in st.session_state:
@@ -167,7 +166,6 @@ def main():
     if search_type == "Meal Name":
         meal_name = st.text_input("Enter Meal Name", key="meal_name") #NEW (text_input)
         
-        # Only perform search if meal name changed or no search performed yet
         if meal_name and (not st.session_state.search_performed or meal_name != st.session_state.last_search):
             result = search_recipe_by_name(meal_name)
             if result["meals"]:

@@ -13,6 +13,8 @@ if 'current_recipe' not in st.session_state:
     st.session_state.current_recipe = None
 if 'current_ingredients' not in st.session_state:
     st.session_state.current_ingredients = ""
+if 'initial_advice_given' not in st.session_state:
+    st.session_state.initial_advice_given = False
 
 def search_recipe_by_name(meal_name):
     response = requests.get(f"{API_URL}search.php?s={meal_name}")
@@ -48,13 +50,15 @@ def chat_with_ai(user_input, context=""):
         return f"Error: {str(e)}"
 
 st.title("NutriAI: Your AI Nutritionist")
-search_type = st.selectbox("Search By", ["Meal Name", "Main Ingredient"])
+search_type = st.selectbox("Search By", ["Meal Name", "Main Ingredient"]) #NEW
 info = ""
 ing = ""
 mname = ""
+recipe_overview = None
+nutrition_query = None
 
 if search_type == "Meal Name":
-    meal_name = st.text_input("Enter Meal Name")
+    meal_name = st.text_input("Enter Meal Name") #NEW
     if meal_name:
         result = search_recipe_by_name(meal_name)
         if result["meals"]:
@@ -69,57 +73,57 @@ if search_type == "Meal Name":
                 if ingredient:
                     ing += (f"{ingredient} - {measure} ")
             st.session_state.current_ingredients = ing
+            
+            recipe_overview = f"{info}\n{ing}\ngive me a very very general overview of the instructions and ingredients"
+            nutrition_query = f"{info}\n{ing}\nGive me a general nutrition analysis of this recipe. We don't need to be too specific, just a general overview is fine."
         else:
             st.write("No recipes found. Please try another name.")
-            query = ""
-    query = st.text_area("Ask about Nutrition:", "Give me a general nutrition analysis of the above recipe")
-    fq = info + "\n" + ing + "\n" + query + "we don't need to be too specific, just general overview is fine."
-    reing = info + "\n" + ing + "\n give me a very very general overview of the instructions and ingredients"
 
 elif search_type == "Main Ingredient":
     ingredient = st.text_input("Enter Main Ingredient")
-    query = st.text_area("Ask about Nutrition:", "Give me general nutrition advice on the main ingredient")
-
     if ingredient:
-        fq = query + f"with the main ingredient being {ingredient}"
+        nutrition_query = f"Give me general nutrition advice on {ingredient} as a main ingredient"
         st.session_state.current_ingredients = f"Main ingredient: {ingredient}"
     elif ingredient == "":
         st.write("Enter a valid ingredient")
     else:
         st.write(f"No meals found with {ingredient}.")
 
-if st.button("Get Advice"):
-    if query and fq:
-        with st.spinner("Analyzing nutritional information..."):
-            if reing:
-                summary = get_nutrition_advice(reing)
-            advice = get_nutrition_advice(fq)
-            st.success("Analysis complete!")
-            if summary:
+query = st.text_area("Ask about Nutrition:", "Give me a general nutrition analysis of the above")
+
+if st.button("Get Advice"): #NEW
+    if query:
+        with st.spinner("Analyzing nutritional information..."): #NEW
+            if recipe_overview:
+                summary = get_nutrition_advice(recipe_overview)
                 st.subheader(f"Overview for {mname}")
                 st.write(summary)
                 st.subheader(f"NutriAI Advice for {mname}")
-            st.write(advice)
             
-            if not st.session_state.messages:
+            if nutrition_query:
+                advice = get_nutrition_advice(nutrition_query)
+                st.success("Analysis complete!")
+                st.write(advice)
+                
+                st.session_state.messages = []
                 st.session_state.messages.append({"role": "assistant", "content": advice})
+                st.session_state.initial_advice_given = True
             
-            if summary and search_type == "Meal Name":
-                if len(result["meals"]) > 1:
-                    st.subheader(f"Other similar recipes for \"{meal_name}\"")
-                    for things in result["meals"][1:]:
-                        st.write(things["strMeal"])
+
+            if search_type == "Meal Name" and 'result' in locals() and len(result["meals"]) > 1:
+                st.subheader(f"Other similar recipes for \"{meal_name}\"")
+                for things in result["meals"][1:]:
+                    st.write(things["strMeal"])
     else:
-        st.warning("Please enter a query to get advice.")
+        st.warning("Please enter a query to get advice.") #NEW
 
-if st.session_state.current_ingredients:
+if st.session_state.current_ingredients and st.session_state.initial_advice_given:
     st.subheader("Chat with NutriAI")
-
-    message = st.session_state.messages[0]
-    with st.chat_message(message["role"]):
-        st.write("Let me know if you have any further questions!")
     
-
+    if len(st.session_state.messages) == 1:
+        with st.chat_message("assistant"): #NEW
+            st.write("Let me know if you have any further questions!")
+    
     if prompt := st.chat_input("Ask a follow-up question about the recipe or nutrition"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):

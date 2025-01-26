@@ -1,20 +1,16 @@
 import streamlit as st
 import base64
 
-# Set page configuration
 st.set_page_config(page_title="Web Development Lab 03 - Home", layout="wide")
 
-# Function to load the video and return as base64
 @st.cache_resource
 def load_video():
     with open("vid/bgvid.mp4", "rb") as video_file:
         video_bytes = video_file.read()
     return base64.b64encode(video_bytes).decode()
 
-# Load resources
 video_str = load_video()
 
-# Custom CSS for the video container and overlay text
 st.markdown("""
     <style>
     body {
@@ -72,14 +68,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Display the page content
 
 st.title("Web Development Lab 03")
 st.header("CS 1301")
 st.subheader("Team 29, Web Development - Section A")
 st.subheader("Rayeed Zaman, Po Cheng Chen")
 
-# Display video with overlay text
 st.markdown(f"""
     <div class="video-container">
         <div class="video-wrapper">
@@ -95,7 +89,6 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# Page descriptions with grey contrast boxes
 st.header("Pages")
 st.markdown("""
 <div class="grey-box cryptic">1. Henry's Portfolio: Explore projects, skills, and achievements by Henry.</div>

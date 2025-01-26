@@ -41,7 +41,8 @@ projects_data = {
     "VEX Robotics Team 980s": ["- Integrated motion profile with feedforward velocity control, achieving 99.5% increase in movement accuracy and 80% in reliability, resulting in a 60% enhancement in smoothness and accuracy over traditional PID control.",
 "- Developed and implemented 6+ autonomous robot control algorithms library including odometry and path tracking from research papers using embedded C++ and OOP, reducing robot programming time by 60%.",
 "- Utilized concurrent control of robot subsystems through RTOS based multi-threading, finite state machines, and mutexes, eliminating race conditions and enhancing overall performance and reliability.",
-"- Awarded at 2022 VEX Worlds Championship: Overall High School quarterfinalist, 8th Overall Worlds Skills Ranking, 1st seed Divisional Tournament Champion, Divisional Amaze Award (Most reliable performance)."]
+"- Awarded at 2022 VEX Worlds Championship: Overall High School quarterfinalist, 8th Overall Worlds Skills Ranking, 1st seed Divisional Tournament Champion, Divisional Amaze Award (Most reliable performance)."],
+"NutriAI, an AI-Powered Nutrition Assistant": ["- Designed and implemented a Streamlit web application integrating REST APIs to fetch recipe data and filter meals by name or ingredients, providing users with meal recommendations and instructions.","- Leveraged Google's Generative AI to deliver nutritional analysis and respond to user queries in a conversational format, enabling personalized user experiences."]
 }
 
 programming_data = {
